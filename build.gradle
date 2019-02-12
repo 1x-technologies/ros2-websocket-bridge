@@ -1,0 +1,38 @@
+plugins {
+   id("us.ihmc.ihmc-build") version "0.15.5"
+   id("us.ihmc.ihmc-ci") version "4.7"
+   id("us.ihmc.log-tools") version "0.2.2"
+   id("org.hidetake.ssh") version "2.9.0"
+   id "application"
+}
+
+ihmc {
+   group = "us.ihmc"
+   version = "0.1.0"
+   vcsUrl = "https://stash.ihmc.us/projects/HAL/repos/ros2-websocket-bridge"
+   openSource = false
+   
+   configureDependencyResolution()
+   configurePublications()
+}
+
+mainDependencies {
+   compile group: "us.ihmc", name: "euclid", version: "0.11.0"
+   compile group: "us.ihmc", name: "euclid-geometry", version: "0.11.0"
+   compile group: "us.ihmc", name: "ihmc-yovariables", version: "0.3.7"
+   compile group: "us.ihmc", name: "ihmc-pub-sub", version: "0.10.1"
+   compile group: "us.ihmc", name: "ihmc-ros2-library", version: "0.13.1"
+   compile group: "us.ihmc", name: "ros2-common-interfaces", version: "0.13.1"
+   compile group: "us.ihmc", name: "ihmc-pub-sub-serializers-extra", version: "0.10.1"
+   
+   
+   compile group: "io.netty", name: "netty-all", version: "4.1.32.Final" 
+   
+   
+}
+
+testDependencies {
+   compile group: "us.ihmc", name: "ihmc-commons-testing", version: "0.25.0"
+   compile group: "us.ihmc", name: "ihmc-robotics-toolkit-test", version: "source"
+}
+
