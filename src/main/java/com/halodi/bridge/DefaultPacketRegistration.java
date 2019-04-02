@@ -2,6 +2,8 @@ package com.halodi.bridge;
 
 import java.util.HashMap;
 
+import diagnostic_msgs.msg.dds.DiagnosticArray;
+import diagnostic_msgs.msg.dds.DiagnosticArrayPubSubType;
 import geometry_msgs.msg.dds.TwistPubSubType;
 import geometry_msgs.msg.dds.TwistStampedPubSubType;
 import sensor_msgs.msg.dds.JointStatePubSubType;
@@ -20,6 +22,7 @@ public class DefaultPacketRegistration implements PacketRegistrationInterface
       topicDataTypes.put(TwistPubSubType.name, new TwistPubSubType());
       topicDataTypes.put(TwistStampedPubSubType.name, new TwistStampedPubSubType());
       topicDataTypes.put(Float64PubSubType.name, new Float64PubSubType());
+      topicDataTypes.put(DiagnosticArrayPubSubType.name, new DiagnosticArrayPubSubType());
    }
    
    @Override
