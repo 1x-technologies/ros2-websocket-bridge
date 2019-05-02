@@ -13,11 +13,12 @@ import io.netty.handler.logging.LoggingHandler;
 
 public class WebsocketCommunicator implements BridgeCommunicator, Runnable
 {
-
+   private static final int DEFAULT_PORT = 8080;
+   
    private BridgeController bridgeController = null;
    private final WebSocketBroadcastHandler webSocketBroadcastHandler = new WebSocketBroadcastHandler();
 
-   static final int PORT = 8080;
+   private int port = DEFAULT_PORT;
 
    public static void main(String[] args) throws Exception
    {
@@ -56,9 +57,9 @@ public class WebsocketCommunicator implements BridgeCommunicator, Runnable
          b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).handler(new LoggingHandler(LogLevel.INFO))
           .childHandler(new WebsocketCommunicatorInitializer(webSocketBroadcastHandler, bridgeController));
 
-         Channel ch = b.bind(PORT).sync().channel();
+         Channel ch = b.bind(port).sync().channel();
 
-         System.out.println("Open your web browser and navigate to http://127.0.0.1:" + PORT + '/');
+         System.out.println("Open your web browser and navigate to http://127.0.0.1:" + port + '/');
 
          ch.closeFuture().sync();
       }
@@ -77,5 +78,10 @@ public class WebsocketCommunicator implements BridgeCommunicator, Runnable
    public void runOnAThread()
    {
       new Thread(this).start();
+   }
+
+   public void setPort(int port)
+   {
+      this.port = port;
    }
 }
