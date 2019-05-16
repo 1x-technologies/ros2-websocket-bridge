@@ -8,13 +8,14 @@ import geometry_msgs.msg.dds.TwistStampedPubSubType;
 import geometry_msgs.msg.dds.Vector3PubSubType;
 import sensor_msgs.msg.dds.JointStatePubSubType;
 import std_msgs.msg.dds.Float64PubSubType;
+import std_msgs.msg.dds.StringPubSubType;
 import trajectory_msgs.msg.dds.JointTrajectoryPubSubType;
 import us.ihmc.pubsub.TopicDataType;
 
 public class DefaultPacketRegistration implements PacketRegistrationInterface
 {
    private final HashMap<String, TopicDataType<?>> topicDataTypes = new HashMap<>();
-   
+
    public DefaultPacketRegistration()
    {
       topicDataTypes.put(JointStatePubSubType.name, new JointStatePubSubType());
@@ -24,8 +25,14 @@ public class DefaultPacketRegistration implements PacketRegistrationInterface
       topicDataTypes.put(Float64PubSubType.name, new Float64PubSubType());
       topicDataTypes.put(DiagnosticArrayPubSubType.name, new DiagnosticArrayPubSubType());
       topicDataTypes.put(Vector3PubSubType.name, new Vector3PubSubType());
+      topicDataTypes.put(StringPubSubType.name, new StringPubSubType());
    }
-   
+
+   public void addTopicDataType(TopicDataType<?> topicDataType)
+   {
+      topicDataTypes.put(topicDataType.getName(), topicDataType);
+   }
+
    @Override
    public TopicDataType<?> getPubSubType(String name)
    {
