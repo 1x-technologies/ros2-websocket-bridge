@@ -6,6 +6,7 @@ import diagnostic_msgs.msg.dds.DiagnosticArrayPubSubType;
 import geometry_msgs.msg.dds.TwistPubSubType;
 import geometry_msgs.msg.dds.TwistStampedPubSubType;
 import geometry_msgs.msg.dds.Vector3PubSubType;
+import nav_msgs.msg.dds.PathPubSubType;
 import sensor_msgs.msg.dds.JointStatePubSubType;
 import std_msgs.msg.dds.Float64PubSubType;
 import std_msgs.msg.dds.StringPubSubType;
@@ -26,6 +27,7 @@ public class DefaultPacketRegistration implements PacketRegistrationInterface
       topicDataTypes.put(DiagnosticArrayPubSubType.name, new DiagnosticArrayPubSubType());
       topicDataTypes.put(Vector3PubSubType.name, new Vector3PubSubType());
       topicDataTypes.put(StringPubSubType.name, new StringPubSubType());
+      topicDataTypes.put(PathPubSubType.name, new PathPubSubType());
    }
 
    public void addTopicDataType(TopicDataType<?> topicDataType)
