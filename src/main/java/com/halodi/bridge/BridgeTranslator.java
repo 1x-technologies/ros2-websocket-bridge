@@ -10,6 +10,8 @@ import us.ihmc.ros2.NewMessageListener;
 
 public class BridgeTranslator<T> implements NewMessageListener<T>
 {
+   private final Object lock = new Object();
+   
    private final TopicDataType<T> topicDataType;
    private final BridgeSerializer<T> serializer;
    private final BridgeController controller;
@@ -47,7 +49,11 @@ public class BridgeTranslator<T> implements NewMessageListener<T>
    
    public T deserialize(JsonNode source) throws IOException
    {
-      return serializer.deserialize(source);
+      // Synchronize publication to avoid garbage data
+      synchronized(lock)
+      {
+         return serializer.deserialize(source);
+      }
    }
 
 }

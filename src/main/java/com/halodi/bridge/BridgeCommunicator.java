@@ -4,5 +4,5 @@ public interface BridgeCommunicator
 {   
    void setup(BridgeController bridgeController);
    
-   void send(String msg, boolean reliable);
+   void send(String topicName, String msg, boolean reliable);
 }

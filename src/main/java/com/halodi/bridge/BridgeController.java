@@ -11,8 +11,8 @@ public class BridgeController
 {
    private final BridgeCommunicator communicator;
    private final BridgeNode node;
-   private final BridgeMessage messageToSend = new BridgeMessage();
-   private final BridgeMessage messageToReceive = new BridgeMessage();
+   
+   private final BridgeMessageSerializer serializer = new BridgeMessageSerializer();
    
    public BridgeController(Ros2Node node, BridgeCommunicator communicator, PacketRegistrationInterface packetRegistration, String name, String namespace) throws IOException
    {
@@ -22,37 +22,46 @@ public class BridgeController
       this.communicator.setup(this);
    }
    
-   private void createPublisher() throws IOException
+   private void createPublisher(BridgeMessage messageToReceive, BridgeClient<?> bridgeClient) throws IOException
    {
       node.createPublisher(messageToReceive.getTopicName(), messageToReceive.getTopicDataType(), this);
+      bridgeClient.addPublishedTopic(messageToReceive.getTopicName());
    }
    
-   private void createSubscriber() throws IOException
+   private void createSubscriber(BridgeMessage messageToReceive, BridgeClient<?> bridgeClient) throws IOException
    {
       node.createSubscriber(messageToReceive.getTopicName(), messageToReceive.getTopicDataType(), this, messageToReceive.isReliable());
+      bridgeClient.addSubscribedTopic(messageToReceive.getTopicName());
    }
    
-   private void receivedData() throws IOException
+   private void receivedData(BridgeMessage messageToReceive, BridgeClient<?> bridgeClient) throws IOException
    {
+      if(!bridgeClient.isPublishingTo(messageToReceive.getTopicName()))
+      {
+         System.err.println("Received message for publishing to unmatched topic " + messageToReceive.getTopicName());
+         return;
+      }
+      
       node.publish(messageToReceive.getTopicName(), messageToReceive.getTopicDataType(), messageToReceive.getData());
    }
    
-   public void receivedMessage(String msg)
+   public void receivedMessage(BridgeClient<?> bridgeClient, String msg)
    {
       try
       {
-         messageToReceive.parseMessage(msg);
+         BridgeMessage messageToReceive = new BridgeMessage(); 
+         serializer.parseMessage(msg, messageToReceive);
          
          switch(messageToReceive.getType())
          {
          case CREATE_PUBLISHER:
-            createPublisher();
+            createPublisher(messageToReceive, bridgeClient);
             break;
          case CREATE_SUBSCRIBER:
-            createSubscriber();
+            createSubscriber(messageToReceive, bridgeClient);
             break;
          case DATA:
-            receivedData();
+            receivedData(messageToReceive, bridgeClient);
             break;
          }
       }
@@ -66,6 +75,7 @@ public class BridgeController
    
    public void send(String topicName, String topicDataType, String data, boolean reliable)
    {
+      BridgeMessage messageToSend = new BridgeMessage();
       messageToSend.setTopicName(topicName);
       messageToSend.setTopicDataType(topicDataType);
       messageToSend.setType(BridgeMessageType.DATA);
@@ -73,7 +83,7 @@ public class BridgeController
       
       try
       {
-         communicator.send(messageToSend.createMessage(), reliable);
+         communicator.send(topicName, serializer.createMessage(messageToSend), reliable);
       }
       catch (JsonProcessingException e)
       {

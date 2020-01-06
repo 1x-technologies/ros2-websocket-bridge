@@ -37,9 +37,9 @@ public class WebsocketCommunicator implements BridgeCommunicator, Runnable
    }
 
    @Override
-   public void send(String msg, boolean reliable)
+   public void send(String topicName, String msg, boolean reliable)
    {
-      webSocketBroadcastHandler.broadcast(msg, reliable);
+      webSocketBroadcastHandler.broadcast(topicName, msg, reliable);
    }
    
    public void run()

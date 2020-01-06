@@ -1,7 +1,9 @@
 package com.halodi.bridge.websocket;
 
+import com.halodi.bridge.BridgeClient;
 import com.halodi.bridge.BridgeController;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -11,6 +13,8 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
 {
    private final WebSocketBroadcastHandler webSocketBroadcastHandler;
    private final BridgeController controller;
+   
+   private final BridgeClient<Channel> bridgeClient = new BridgeClient<>();
 
    public WebSocketFrameHandler(WebSocketBroadcastHandler webSocketBroadcastHandler, BridgeController controller)
    {
@@ -24,7 +28,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
       if (frame instanceof TextWebSocketFrame)
       {
          String request = ((TextWebSocketFrame) frame).text();
-         controller.receivedMessage(request);
+         controller.receivedMessage(bridgeClient, request);
       }
       else
       {
@@ -36,6 +40,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
    @Override
    public void channelActive(ChannelHandlerContext ctx) throws Exception
    {
-      webSocketBroadcastHandler.addClient(ctx.channel());
+      bridgeClient.setImplementation(ctx.channel());
+      webSocketBroadcastHandler.addClient(bridgeClient);
    }
 }

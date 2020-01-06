@@ -1,5 +1,9 @@
 package com.halodi.bridge.websocket;
 
+import java.util.HashMap;
+
+import com.halodi.bridge.BridgeClient;
+
 import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.ChannelMatcher;
@@ -10,45 +14,52 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 public class WebSocketBroadcastHandler
 {
    private final ChannelGroup clients = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-   private static final ChannelMatcher WRITABLE_CHANNEL_MATCHER = new WritableChannelMatcher();
-   
-   private static class WritableChannelMatcher implements ChannelMatcher
-   {
+   private HashMap<Channel, BridgeClient<Channel>> clientMap = new HashMap<>(); 
 
+   
+   private class TopicChannelMatcher implements ChannelMatcher
+   {
+      private final boolean reliable;
+      private final String topicName;
+      
+      public TopicChannelMatcher(boolean reliable, String topicName)
+      {
+         this.reliable = reliable;
+         this.topicName = topicName;
+      }
+            
+      
       @Override
       public boolean matches(Channel channel)
       {
-         if(channel.isWritable())
+         BridgeClient<Channel> client = clientMap.get(channel);
+         
+         if(client == null)
          {
-            return true;
-         }
-         else
-         {
+            System.err.println("Unmatched client " + channel);
             return false;
          }
+         
+         return client.isSubscribedTo(topicName);         
+         
       }
       
    }
    
    
-   public void addClient(Channel channel)
+   
+   public void addClient(BridgeClient<Channel> bridgeClient)
    {
 
-      System.out.println("Adding new channel {} to list of channels " + channel.remoteAddress());
-      clients.add(channel);
+      System.out.println("Adding new channel {} to list of channels " + bridgeClient.getImplementation().remoteAddress());
+      clients.add(bridgeClient.getImplementation());
+      clientMap.put(bridgeClient.getImplementation(), bridgeClient);
       System.out.println(clients);
    }
    
-   public void broadcast(String msg, boolean reliable)
+   public void broadcast(String topicName, String msg, boolean reliable)
    {
       TextWebSocketFrame frame = new TextWebSocketFrame(msg);
-      if(reliable)
-      {
-         clients.writeAndFlush(frame);
-      }
-      else
-      {
-         clients.writeAndFlush(frame, WRITABLE_CHANNEL_MATCHER);
-      }
+      clients.writeAndFlush(frame, new TopicChannelMatcher(reliable, topicName));
    }
 }

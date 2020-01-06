@@ -11,13 +11,14 @@ public class DummyCommunicator implements BridgeCommunicator
 {
 
    private BridgeController controller;
+   private final BridgeMessageSerializer messageSerializer = new BridgeMessageSerializer();
 
    public DummyCommunicator()
    {
    }
 
    @Override
-   public void send(String msg, boolean reliable)
+   public void send(String topicName, String msg, boolean reliable)
    {
       System.out.println(msg);
    }
@@ -34,10 +35,12 @@ public class DummyCommunicator implements BridgeCommunicator
       publishToJointTrajectory.setTopicDataType(JointTrajectoryPubSubType.name);
       publishToJointTrajectory.setType(BridgeMessageType.CREATE_PUBLISHER);
 
+      BridgeClient<?> bridgeClient = new BridgeClient<>();
+      
       try
       {
-         controller.receivedMessage(subscribeToJointState.createMessage());
-         controller.receivedMessage(publishToJointTrajectory.createMessage());
+         controller.receivedMessage(bridgeClient, messageSerializer.createMessage(subscribeToJointState));
+         controller.receivedMessage(bridgeClient, messageSerializer.createMessage(publishToJointTrajectory));
 
          JointTrajectoryPubSubType jointTrajectoryPubSubType = new JointTrajectoryPubSubType();
          BridgeSerializer<JointTrajectory> serializer = new BridgeSerializer<>(jointTrajectoryPubSubType);
@@ -57,7 +60,7 @@ public class DummyCommunicator implements BridgeCommunicator
             encapsulatedMessage.setType(BridgeMessageType.DATA);
             encapsulatedMessage.setData(msg);
 
-            controller.receivedMessage(encapsulatedMessage.createMessage());
+            controller.receivedMessage(bridgeClient, messageSerializer.createMessage(encapsulatedMessage));
 
             d += 1.0;
             ThreadTools.sleep(1000);
