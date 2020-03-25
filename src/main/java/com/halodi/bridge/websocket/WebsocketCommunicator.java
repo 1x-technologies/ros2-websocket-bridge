@@ -10,6 +10,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.DefaultThreadFactory;
 
 public class WebsocketCommunicator implements BridgeCommunicator, Runnable
 {
@@ -20,6 +21,8 @@ public class WebsocketCommunicator implements BridgeCommunicator, Runnable
 
    private int port = DEFAULT_PORT;
 
+   private volatile Channel ch = null;
+   
    public static void main(String[] args) throws Exception
    {
       new WebsocketCommunicator().run();
@@ -49,7 +52,7 @@ public class WebsocketCommunicator implements BridgeCommunicator, Runnable
          throw new RuntimeException("Setup has not been called");
       }
       
-      EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+      EventLoopGroup bossGroup = new NioEventLoopGroup(1, new DefaultThreadFactory(NioEventLoopGroup.class, true));
       EventLoopGroup workerGroup = new NioEventLoopGroup();
       try
       {
@@ -57,7 +60,7 @@ public class WebsocketCommunicator implements BridgeCommunicator, Runnable
          b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).handler(new LoggingHandler(LogLevel.INFO))
           .childHandler(new WebsocketCommunicatorInitializer(webSocketBroadcastHandler, bridgeController));
 
-         Channel ch = b.bind(port).sync().channel();
+         ch = b.bind(port).sync().channel();
 
          System.out.println("Open your web browser and navigate to http://127.0.0.1:" + port + '/');
 
@@ -78,6 +81,14 @@ public class WebsocketCommunicator implements BridgeCommunicator, Runnable
    public void runOnAThread()
    {
       new Thread(this).start();
+   }
+   
+   public void stop()
+   {
+      if(ch != null)
+      {
+         ch.close();
+      }
    }
 
    public void setPort(int port)
