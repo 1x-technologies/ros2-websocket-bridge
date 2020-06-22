@@ -18,19 +18,16 @@ ihmc {
 }
 
 mainDependencies {
-   api("us.ihmc:euclid:0.14.2")
-   api("us.ihmc:euclid-frame:0.14.2")
-   api("us.ihmc:euclid-geometry:0.14.2")
-   api("us.ihmc:ihmc-yovariables:0.7.0")
+   api("us.ihmc:euclid:0.15.0")
+   api("us.ihmc:euclid-frame:0.15.0")
+   api("us.ihmc:euclid-geometry:0.15.0")
+   api("us.ihmc:ihmc-yovariables:0.8.0")
    api("us.ihmc:ihmc-pub-sub:0.14.0")
    api("us.ihmc:ihmc-ros2-library:0.16.0")
    api("us.ihmc:ros2-common-interfaces:0.16.0")
    api("us.ihmc:ihmc-pub-sub-serializers-extra:0.13.0")
    
-   
    api("io.netty:netty-all:4.1.32.Final") 
-   
-   
 }
 
 testDependencies {
