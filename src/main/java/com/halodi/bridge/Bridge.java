@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.halodi.bridge.websocket.WebsocketCommunicator;
 
 import us.ihmc.commons.thread.ThreadTools;
-import us.ihmc.ros2.Ros2Node;
+import us.ihmc.ros2.ROS2Node;
 
 /**
  * This is an example class to create a ROS2 bridge.
@@ -30,7 +30,7 @@ public class Bridge
       create(null);
    }
    
-   public static void create(Ros2Node node) throws IOException
+   public static void create(ROS2Node node) throws IOException
    {
       PacketRegistrationInterface packetRegistration = new DefaultPacketRegistration();
       WebsocketCommunicator communicator = new WebsocketCommunicator();
