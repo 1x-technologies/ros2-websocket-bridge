@@ -11,17 +11,17 @@ import us.ihmc.pubsub.TopicDataType;
 import us.ihmc.ros2.ROS2Distro;
 import us.ihmc.ros2.ROS2Node;
 import us.ihmc.ros2.ROS2Publisher;
-import us.ihmc.ros2.Ros2Subscription;
+import us.ihmc.ros2.ROS2Subscription;
 
 public class BridgeNode
 {
    private final class SubscriptionHolder
    {
       @SuppressWarnings("unused")
-      private final Ros2Subscription<?> subscription;
+      private final ROS2Subscription<?> subscription;
       private final String dataType;
 
-      public SubscriptionHolder(Ros2Subscription<?> subscription, String dataType)
+      public SubscriptionHolder(ROS2Subscription<?> subscription, String dataType)
       {
          this.subscription = subscription;
          this.dataType = dataType;
@@ -79,7 +79,7 @@ public class BridgeNode
       {
 
          TopicDataType<?> topicDataType = getTopicDataType(dataTypeName);
-         Ros2Subscription<?> subscription = node.createSubscription(topicDataType, new BridgeTranslator(name, controller, topicDataType, reliable), name);
+         ROS2Subscription<?> subscription = node.createSubscription(topicDataType, new BridgeTranslator(name, controller, topicDataType, reliable), name);
 
          subscriptions.put(name, new SubscriptionHolder(subscription, dataTypeName));
          
