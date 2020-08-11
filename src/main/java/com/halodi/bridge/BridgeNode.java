@@ -10,7 +10,7 @@ import us.ihmc.pubsub.DomainFactory.PubSubImplementation;
 import us.ihmc.pubsub.TopicDataType;
 import us.ihmc.ros2.ROS2Distro;
 import us.ihmc.ros2.ROS2Node;
-import us.ihmc.ros2.Ros2Publisher;
+import us.ihmc.ros2.ROS2Publisher;
 import us.ihmc.ros2.Ros2Subscription;
 
 public class BridgeNode
@@ -31,11 +31,11 @@ public class BridgeNode
 
    private final class PublisherHolder<T>
    {
-      private final Ros2Publisher<T> publisher;
+      private final ROS2Publisher<T> publisher;
       private final TopicDataType<T> dataType;
       private final BridgeTranslator<T> bridgeTranslator;
 
-      public PublisherHolder(String topic, BridgeController controller, Ros2Publisher<T> publisher, TopicDataType<T> dataType)
+      public PublisherHolder(String topic, BridgeController controller, ROS2Publisher<T> publisher, TopicDataType<T> dataType)
       {
          super();
          this.publisher = publisher;
@@ -110,7 +110,7 @@ public class BridgeNode
       else
       {
          TopicDataType<?> topicDataType = getTopicDataType(dataTypeName);
-         Ros2Publisher<?> publisher = node.createPublisher(topicDataType, name);
+         ROS2Publisher<?> publisher = node.createPublisher(topicDataType, name);
          publishers.put(name, new PublisherHolder(name, controller, publisher, topicDataType));
          
          LogTools.info("Created publisher " + name);
