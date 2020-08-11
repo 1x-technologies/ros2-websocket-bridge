@@ -6,7 +6,7 @@ import sensor_msgs.msg.dds.JointState;
 import sensor_msgs.msg.dds.JointStatePubSubType;
 import us.ihmc.commons.thread.ThreadTools;
 import us.ihmc.pubsub.DomainFactory.PubSubImplementation;
-import us.ihmc.ros2.Ros2Distro;
+import us.ihmc.ros2.ROS2Distro;
 import us.ihmc.ros2.Ros2Node;
 import us.ihmc.ros2.Ros2Publisher;
 
@@ -14,7 +14,7 @@ public class BridgeTester
 {
    public static void main(String[] args) throws IOException
    {
-      Ros2Node node = new Ros2Node(PubSubImplementation.FAST_RTPS, Ros2Distro.BOUNCY, Bridge.name, Bridge.namespace);
+      Ros2Node node = new Ros2Node(PubSubImplementation.FAST_RTPS, ROS2Distro.BOUNCY, Bridge.name, Bridge.namespace);
 
       Ros2Publisher<JointState> pub = node.createPublisher(new JointStatePubSubType(), Bridge.namespace + "/joint_states");
 

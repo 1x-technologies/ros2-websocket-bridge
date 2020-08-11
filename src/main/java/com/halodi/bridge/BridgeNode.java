@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import us.ihmc.log.LogTools;
 import us.ihmc.pubsub.DomainFactory.PubSubImplementation;
 import us.ihmc.pubsub.TopicDataType;
-import us.ihmc.ros2.Ros2Distro;
+import us.ihmc.ros2.ROS2Distro;
 import us.ihmc.ros2.Ros2Node;
 import us.ihmc.ros2.Ros2Publisher;
 import us.ihmc.ros2.Ros2Subscription;
@@ -60,7 +60,7 @@ public class BridgeNode
       }
       else
       {
-         this.node = new Ros2Node(PubSubImplementation.FAST_RTPS, Ros2Distro.BOUNCY, name, namespace);
+         this.node = new Ros2Node(PubSubImplementation.FAST_RTPS, ROS2Distro.BOUNCY, name, namespace);
       }
       this.registration = registration;
    }
