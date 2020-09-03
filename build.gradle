@@ -25,7 +25,7 @@ mainDependencies {
    api("us.ihmc:ihmc-pub-sub:0.14.0")
    api("us.ihmc:ihmc-ros2-library:0.19.1")
    api("us.ihmc:ros2-common-interfaces:0.19.1")
-   api("us.ihmc:ihmc-pub-sub-serializers-extra:0.13.0")
+   api("us.ihmc:ihmc-pub-sub-serializers-extra:0.14.0")
    
    api("io.netty:netty-all:4.1.32.Final") 
 }
