@@ -8,20 +8,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import us.ihmc.log.LogTools;
 import us.ihmc.pubsub.DomainFactory.PubSubImplementation;
 import us.ihmc.pubsub.TopicDataType;
-import us.ihmc.ros2.Ros2Distro;
-import us.ihmc.ros2.Ros2Node;
-import us.ihmc.ros2.Ros2Publisher;
-import us.ihmc.ros2.Ros2Subscription;
+import us.ihmc.ros2.ROS2Distro;
+import us.ihmc.ros2.ROS2Node;
+import us.ihmc.ros2.ROS2Publisher;
+import us.ihmc.ros2.ROS2Subscription;
 
 public class BridgeNode
 {
    private final class SubscriptionHolder
    {
       @SuppressWarnings("unused")
-      private final Ros2Subscription<?> subscription;
+      private final ROS2Subscription<?> subscription;
       private final String dataType;
 
-      public SubscriptionHolder(Ros2Subscription<?> subscription, String dataType)
+      public SubscriptionHolder(ROS2Subscription<?> subscription, String dataType)
       {
          this.subscription = subscription;
          this.dataType = dataType;
@@ -31,11 +31,11 @@ public class BridgeNode
 
    private final class PublisherHolder<T>
    {
-      private final Ros2Publisher<T> publisher;
+      private final ROS2Publisher<T> publisher;
       private final TopicDataType<T> dataType;
       private final BridgeTranslator<T> bridgeTranslator;
 
-      public PublisherHolder(String topic, BridgeController controller, Ros2Publisher<T> publisher, TopicDataType<T> dataType)
+      public PublisherHolder(String topic, BridgeController controller, ROS2Publisher<T> publisher, TopicDataType<T> dataType)
       {
          super();
          this.publisher = publisher;
@@ -46,13 +46,13 @@ public class BridgeNode
    }
 
    private final PacketRegistrationInterface registration;
-   private final Ros2Node node;
+   private final ROS2Node node;
 
    private final HashMap<String, SubscriptionHolder> subscriptions = new HashMap<>();
    @SuppressWarnings("rawtypes")
    private final HashMap<String, PublisherHolder> publishers = new HashMap<>();
 
-   public BridgeNode(Ros2Node node, PacketRegistrationInterface registration, String name, String namespace) throws IOException
+   public BridgeNode(ROS2Node node, PacketRegistrationInterface registration, String name, String namespace) throws IOException
    {
       if(node != null)
       {
@@ -60,7 +60,7 @@ public class BridgeNode
       }
       else
       {
-         this.node = new Ros2Node(PubSubImplementation.FAST_RTPS, Ros2Distro.BOUNCY, name, namespace);
+         this.node = new ROS2Node(PubSubImplementation.FAST_RTPS, ROS2Distro.BOUNCY, name, namespace);
       }
       this.registration = registration;
    }
@@ -79,7 +79,7 @@ public class BridgeNode
       {
 
          TopicDataType<?> topicDataType = getTopicDataType(dataTypeName);
-         Ros2Subscription<?> subscription = node.createSubscription(topicDataType, new BridgeTranslator(name, controller, topicDataType, reliable), name);
+         ROS2Subscription<?> subscription = node.createSubscription(topicDataType, new BridgeTranslator(name, controller, topicDataType, reliable), name);
 
          subscriptions.put(name, new SubscriptionHolder(subscription, dataTypeName));
          
@@ -110,7 +110,7 @@ public class BridgeNode
       else
       {
          TopicDataType<?> topicDataType = getTopicDataType(dataTypeName);
-         Ros2Publisher<?> publisher = node.createPublisher(topicDataType, name);
+         ROS2Publisher<?> publisher = node.createPublisher(topicDataType, name);
          publishers.put(name, new PublisherHolder(name, controller, publisher, topicDataType));
          
          LogTools.info("Created publisher " + name);

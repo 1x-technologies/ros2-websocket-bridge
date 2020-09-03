@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import us.ihmc.log.LogTools;
-import us.ihmc.ros2.Ros2Node;
+import us.ihmc.ros2.ROS2Node;
 
 public class BridgeController
 {
@@ -14,7 +14,7 @@ public class BridgeController
    
    private final BridgeMessageSerializer serializer = new BridgeMessageSerializer();
    
-   public BridgeController(Ros2Node node, BridgeCommunicator communicator, PacketRegistrationInterface packetRegistration, String name, String namespace) throws IOException
+   public BridgeController(ROS2Node node, BridgeCommunicator communicator, PacketRegistrationInterface packetRegistration, String name, String namespace) throws IOException
    {
       this.communicator = communicator;
       this.node = new BridgeNode(node, packetRegistration, name, namespace);
